@@ -57,7 +57,7 @@ bindkey '^[[1;5C' forward-word
 source ~/.zsh/aliases
 source ~/.work/workrc
 
-export RIPGREP_CONFIG_PATH=/home/forest/.ripgreprc
+export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
 
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 # Load zsh-syntax-highlighting; should be last.

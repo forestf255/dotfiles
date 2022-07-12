@@ -79,7 +79,7 @@ __set_prompt() {
 
 export PROMPT_COMMAND=__set_prompt
 
-export RIPGREP_CONFIG_PATH=/home/forest/.ripgreprc
+export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
 
 #### ALIASES ####
 # enable color support of ls and also add handy aliases
