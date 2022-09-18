@@ -128,17 +128,22 @@ Plug 'https://github.com/ctrlpvim/ctrlp.vim.git'
 Plug 'jlanzarotta/bufexplorer'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-vinegar'
+Plug 'ruanyl/vim-gh-line'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-vinegar'
+Plug 'tpope/vim-surround'
 Plug 'morhetz/gruvbox'
 Plug 'svermeulen/vim-cutlass'
-Plug 'neoclide/coc.nvim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vim-autoformat/vim-autoformat'
 Plug 'francoiscabrol/ranger.vim'
+Plug 'ruanyl/vim-gh-line'
 call plug#end()
 
 " autoformat on save
 au BufWrite * :Autoformat
+
+xnoremap f :Autoformat<CR>
 
 let g:formatter_python_style = 'black'
 
@@ -158,16 +163,25 @@ nmap <leader>f  <Plug>(coc-format-selected)
 let g:coc_disable_startup_warning = 1
 let g:coc_disable_transparent_cursor = 1
 
-" use <tab> for trigger completion and navigate to the next complete item
-function! s:check_back_space() abort
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#confirm() :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+function! CheckBackspace() abort
   let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~ '\s'
+  return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-inoremap <silent><expr> <Tab>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<Tab>" :
-      \ coc#refresh()
+
+let g:ctrlp_use_caching = 1
+let g:ctrlp_clear_cache_on_exit = 0
 
 " Plugin shortcuts
 let g:ctrlp_map = '<c-f>'
@@ -178,10 +192,12 @@ nmap <leader>o :BufExplorer<cr>
 if executable('rg')
   set grepprg=rg\ --color=never
   let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
-  let g:ctrlp_use_caching = 1
 endif
+
 
 " Ignore these from rg search
 set wildignore+=*/.git/*,*/tmp/*,*.swp
 " Always color rg output
 set grepprg=grep\ --color=always\ -n\ $*\ /dev/null
+
+let g:gh_open_command = 'fn() { echo "$@" | xsel -ib; }; fn '
