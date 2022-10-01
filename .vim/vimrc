@@ -20,7 +20,7 @@ set number
 set relativenumber
 
 " Toggle relative line numbers
-nnoremap <leader>r :call RelativeNumToggle()<cr>
+nnoremap <leader>n :call RelativeNumToggle()<cr>
 function! RelativeNumToggle()
   if &relativenumber
     set norelativenumber
@@ -124,7 +124,6 @@ else
 endif
 
 call plug#begin('~/.vim/plugged')
-Plug 'https://github.com/ctrlpvim/ctrlp.vim.git'
 Plug 'jlanzarotta/bufexplorer'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-commentary'
@@ -138,6 +137,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vim-autoformat/vim-autoformat'
 Plug 'francoiscabrol/ranger.vim'
 Plug 'ruanyl/vim-gh-line'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 call plug#end()
 
 " autoformat on save
@@ -158,8 +159,6 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
 let g:coc_disable_startup_warning = 1
 let g:coc_disable_transparent_cursor = 1
 
@@ -172,21 +171,20 @@ inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 " Make <CR> to accept selected completion item or notify coc.nvim to format
 " <C-g>u breaks current undo, please make your own choice.
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-
-let g:ctrlp_use_caching = 1
-let g:ctrlp_clear_cache_on_exit = 0
+let g:ranger_map_keys = 0
 
 " Plugin shortcuts
-let g:ctrlp_map = '<c-f>'
-nmap <C-e> :Ranger<CR>
-nmap <leader>o :BufExplorer<cr>
+nnoremap <leader>r :Ranger<cr>
+nnoremap <leader>e :BufExplorer<cr>
+nnoremap <leader>f :Files<cr>
+nnoremap <C-f> :Rg<space>
 
 " Use rg for grep searches
 if executable('rg')

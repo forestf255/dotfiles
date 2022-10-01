@@ -81,6 +81,8 @@ export PROMPT_COMMAND=__set_prompt
 
 export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
 
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden'
+
 #### ALIASES ####
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
