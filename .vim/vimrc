@@ -131,6 +131,7 @@ Plug 'ruanyl/vim-gh-line'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-surround'
+Plug 'ojroques/vim-oscyank',
 Plug 'morhetz/gruvbox'
 Plug 'svermeulen/vim-cutlass'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -141,12 +142,26 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 call plug#end()
 
-" autoformat on save
-au BufWrite * :Autoformat
+let g:airline_extensions = []
+let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
+
+" Use // for C/C++ comments
+autocmd FileType cpp set commentstring=//\ %s
+autocmd FileType c set commentstring=//\ %s
 
 xnoremap f :Autoformat<CR>
+noremap f :Autoformat<CR>
 
 let g:formatter_python_style = 'black'
+let g:formatdef_custom_clang = '"clang-format --fallback-style=google"'
+let g:formatdef_buildifier = '"buildifier"'
+let g:formatters_cpp = ['custom_clang']
+let g:formatters_c = ['custom_clang']
+
+" Autoforward yank events.
+autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankRegister "' | endif
+let g:oscyank_silent = v:true
+let g:oscyank_term = 'default'
 
 " vim-cutlass
 nnoremap m d
@@ -182,14 +197,14 @@ let g:ranger_map_keys = 0
 
 " Plugin shortcuts
 nnoremap <leader>r :Ranger<cr>
-nnoremap <leader>e :BufExplorer<cr>
+nnoremap <leader>i :Ranger<cr>
+nnoremap <leader>o :BufExplorer<cr>
 nnoremap <leader>f :Files<cr>
 nnoremap <C-f> :Rg<space>
 
 " Use rg for grep searches
 if executable('rg')
   set grepprg=rg\ --color=never
-  let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
 endif
 
 
@@ -199,3 +214,4 @@ set wildignore+=*/.git/*,*/tmp/*,*.swp
 set grepprg=grep\ --color=always\ -n\ $*\ /dev/null
 
 let g:gh_open_command = 'fn() { echo "$@" | xsel -ib; }; fn '
+let g:gh_trace = 1
