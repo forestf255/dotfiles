@@ -54,6 +54,26 @@ parse_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 
+_git_branch_delete_pattern () {
+  git branch | grep $1 | xargs git branch -D
+}
+
+_git_rebase_onto () {
+  _REBASE_FROM="HEAD~1"
+  _REBASE_TO="origin/master"
+  if [[ -z "$1" && -z "$2" ]]; then
+    # $1 is the commit that we are rebasing from
+    # $2 is the commit that we are rebasing to
+    _REBASE_FROM=$1
+    _REBASE_TO=$2
+  elif [[ -z "$1" ]]; then
+    # $1 is the commit that we are rebasing to
+    _REBASE_TO=$1
+  fi
+  git rebase $_REBASE_FROM --onto $_REBASE_TO
+}
+
+
 __set_prompt() {
   local EXIT="$?"             # This needs to be first
   PS1=""
@@ -93,6 +113,17 @@ if [ -x /usr/bin/dircolors ]; then
   alias grep='grep --color=auto'
   alias fgrep='fgrep --color=auto'
   alias egrep='egrep --color=auto'
+  alias ga='git add'
+  alias gb='git branch'
+  alias gbd='_git_branch_delete_pattern'
+  alias gco='git checkout'
+  alias gcb='git checkout -b'
+  alias gcm='git commit'
+  alias gcma='git commit --amend'
+  alias gl='git log'
+  alias gr='git rebase'
+  alias gro='_git_rebase_onto'
+  alias gs='git status'
 fi
 
 # https://www.atlassian.com/git/tutorials/dotfiles
