@@ -141,6 +141,7 @@ Plug 'ruanyl/vim-gh-line'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'vim-scripts/DoxygenToolkit.vim'
+Plug 'wellle/context.vim'
 call plug#end()
 
 let g:airline_extensions = []

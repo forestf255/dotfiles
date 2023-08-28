@@ -134,4 +134,8 @@ alias cdg='cd `git rev-parse --show-toplevel`'
 alias r='ranger'
 alias f='fzf'
 alias tm='tmux attach -t default -d || tmux new-session -s default'
+
 export PATH=$PATH:$HOME/bin
+if [ -e "$HOME/.cargo/env" ]; then
+  . "$HOME/.cargo/env"
+fi
