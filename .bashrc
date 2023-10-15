@@ -101,7 +101,7 @@ export PROMPT_COMMAND=__set_prompt
 
 export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
 
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden'
+export FZF_DEFAULT_COMMAND='rg --files --hidden'
 
 #### ALIASES ####
 # enable color support of ls and also add handy aliases
@@ -134,6 +134,8 @@ alias cdg='cd `git rev-parse --show-toplevel`'
 alias r='ranger'
 alias f='fzf'
 alias tm='tmux attach -t default -d || tmux new-session -s default'
+
+export VIMRC_PATH=$HOME/.vim/vimrc
 
 export PATH=$PATH:$HOME/bin
 if [ -e "$HOME/.cargo/env" ]; then

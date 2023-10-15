@@ -1,3 +1,9 @@
+" Reload vim after saving it
+augroup VimReload
+  autocmd!
+  autocmd BufWritePost  $VIMRC_PATH  source $VIMRC_PATH
+augroup END
+
 " Don't try to be vi compatible
 set nocompatible
 
@@ -29,7 +35,7 @@ function! RelativeNumToggle()
   endif
 endfunction
 
-" Blink cursor on error instead of beeping (grr)
+" Blink cursor on error instead of beeping
 set visualbell
 
 " Encoding
@@ -48,7 +54,7 @@ autocmd Filetype c set textwidth=99
 autocmd Filetype cpp set textwidth=99
 
 " Toggle line marker
-nnoremap <leader>c :call MarkColumnToggle()<cr>
+nnoremap <leader>m :call MarkColumnToggle()<cr>
 function! MarkColumnToggle()
   if &colorcolumn
     set colorcolumn=
@@ -82,17 +88,6 @@ set listchars=tab:▸\ ,eol:¬
 "Use your leader key + l to toggle on/off
 map <leader>l :set list!<CR> " Toggle tabs and EOL
 
-" Color scheme (terminal)
-if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
-endif
-set background=dark
-let g:gruvbox_contrast_light = 'hard'
-let g:gruvbox_contrast_dark = 'soft'
-colorscheme gruvbox
-
 " Highlight trailing white space
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
@@ -106,9 +101,6 @@ map <C-j> <C-W>j
 map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
-map <leader>j :bn<cr>
-map <leader>k :bp<cr>
-map <leader>d :bd<cr>
 
 :imap jk <Esc>
 
@@ -116,7 +108,7 @@ map <leader>d :bd<cr>
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
         \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+  autocmd VimEnter * PlugInstall --sync | source $VIMRC_PATH
 else
   " Light / Dark Mode
   :command Dark set background=dark
@@ -132,17 +124,28 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-surround'
 Plug 'ojroques/vim-oscyank',
-Plug 'morhetz/gruvbox'
+Plug 'sainnhe/gruvbox-material'
+Plug 'sheerun/vim-polyglot'
 Plug 'svermeulen/vim-cutlass'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vim-autoformat/vim-autoformat'
-Plug 'francoiscabrol/ranger.vim'
 Plug 'ruanyl/vim-gh-line'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'jesseleite/vim-agriculture'
 Plug 'vim-scripts/DoxygenToolkit.vim'
 Plug 'wellle/context.vim'
 call plug#end()
+
+" Set the terminal colors. Must be done after plug#end()
+if has('termguicolors')
+  set termguicolors
+endif
+set background=dark
+let g:gruvbox_material_disable_italic_comment = 1
+let g:gruvbox_material_background = 'soft'
+let g:airline_theme = 'gruvbox_material'
+colorscheme gruvbox-material
 
 let g:airline_extensions = []
 let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
@@ -195,25 +198,66 @@ function! CheckBackspace() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-let g:ranger_map_keys = 0
-
-" Plugin shortcuts
-nnoremap <leader>r :Ranger<cr>
-nnoremap <leader>i :Ranger<cr>
 nnoremap <leader>o :BufExplorer<cr>
+" Fzf search files from root dir.
 nnoremap <leader>f :Files<cr>
-nnoremap <C-f> :Rg<space>
+" Fzf search history.
+nnoremap <leader>h :History<cr>
+" Fzf search text from the root dir.
+nnoremap <C-g> :RgRaw<space>""<left>
+" Fzf search text from the current file's directory.
+nnoremap <C-f> :let $VIM_DIR=expand('%:p:h')<CR>:RgRaw<space>""<space>$VIM_DIR<S-left><left><left>
+" Fzf search the last search pattern from the root dir.
+nnoremap <C-s> :call SearchInProject()<cr>
+function! SearchInProject()
+  let search = substitute(@/, '["\\<", "\\>]', '', 'g')
+  execute "RgRaw " . search
+endfunction
 
 " Use rg for grep searches
 if executable('rg')
   set grepprg=rg\ --color=never
 endif
 
+" Opens a shell in the current files directory
+nnoremap <C-i> :let $VIM_DIR=expand('%:p:h')<cr>:tab :term ++close bash<cr>cd $VIM_DIR<cr>
+" For the following functions:
+" @/ = last search pattern
+" . is used to join strings
+" Replace in the current file on the last searched string
+nmap <expr>  <leader>rf ':%s/' . @/ . '//g<left><left>'
+" Replace in the last searched string in the current file's directory
+nnoremap <leader>rd :call ReplaceInDirectory(expand('%:p:h'))<cr>
+function! ReplaceInDirectory(dir)
+  let search = @/
+  let dir = a:dir . "/*"
+  execute "vimgrep /" . search . "/gj " . dir "/* | copen "
+  call ReplaceInQuickFixList(search)
+endfunction
+" Replace in the project on the last searched string
+" 1) <ctrl-s>: Opens FZF with the last search pattern.
+" 2) ctrl-s + enter: Saves the fzf list to the QuickFix list
+" 3) <leader>rq: Starts a replace on the list
+let $FZF_DEFAULT_OPTS = '--bind ctrl-s:select-all'
+nnoremap <leader>rq :call ReplaceInQuickFixList(@/)<cr>
+function! ReplaceInQuickFixList(search)
+  try
+    let replace = input('Enter replacement pattern: ')
+    execute "cfdo %s/" . a:search . "/" . replace . "/gc | cfdo update"
+  finally
+    cclose
+  endtry
+endfunction
 
 " Ignore these from rg search
 set wildignore+=*/.git/*,*/tmp/*,*.swp
 " Always color rg output
 set grepprg=grep\ --color=always\ -n\ $*\ /dev/null
 
+" Copy github link with <leader>gh
 let g:gh_open_command = 'fn() { echo "$@" | xsel -ib; }; fn '
 let g:gh_trace = 1
+
+" Create doxygen comment
+map <leader>c :Dox<cr>
+

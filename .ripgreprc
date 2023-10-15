@@ -1,11 +1,14 @@
 --max-columns=150
 --max-columns-preview
 
---glob=!git/*
+--glob=!.git/*
+--glob=!.cache/*
 --glob=!*.swp
 --glob=!*.lay
 --glob=!*.png
 --glob=!*.mp4
+--glob=!*.patch
+--glob=!*.sum
 
 --colors=line:none
 --colors=line:style:bold
