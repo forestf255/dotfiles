@@ -220,7 +220,7 @@ if executable('rg')
 endif
 
 " Opens a shell in the current files directory
-nnoremap <C-i> :let $VIM_DIR=expand('%:p:h')<cr>:tab :term ++close bash<cr>cd $VIM_DIR<cr>
+nnoremap <C-x> :let $VIM_DIR=expand('%:p:h')<cr>:tab :term ++close bash<cr>cd $VIM_DIR<cr>
 " For the following functions:
 " @/ = last search pattern
 " . is used to join strings
@@ -237,13 +237,15 @@ endfunction
 " Replace in the project on the last searched string
 " 1) <ctrl-s>: Opens FZF with the last search pattern.
 " 2) ctrl-s + enter: Saves the fzf list to the QuickFix list
-" 3) <leader>rq: Starts a replace on the list
+" 3) <leader>rq: Starts a replace on the QuickFix list
 let $FZF_DEFAULT_OPTS = '--bind ctrl-s:select-all'
+" Replace in QuickFix list.
 nnoremap <leader>rq :call ReplaceInQuickFixList(@/)<cr>
 function! ReplaceInQuickFixList(search)
+  let search = substitute(a:search, '["\\<", "\\>]', '', 'g')
   try
     let replace = input('Enter replacement pattern: ')
-    execute "cfdo %s/" . a:search . "/" . replace . "/gc | cfdo update"
+    execute "cfdo %s/" . search . "/" . replace . "/gc | update"
   finally
     cclose
   endtry
