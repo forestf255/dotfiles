@@ -132,6 +132,7 @@ Plug 'vim-autoformat/vim-autoformat'
 Plug 'ruanyl/vim-gh-line'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/vim-peekaboo'
 Plug 'jesseleite/vim-agriculture'
 Plug 'vim-scripts/DoxygenToolkit.vim'
 Plug 'wellle/context.vim'
@@ -263,3 +264,4 @@ let g:gh_trace = 1
 " Create doxygen comment
 map <leader>c :Dox<cr>
 
+let g:peekaboo_window = '30new'
