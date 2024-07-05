@@ -39,6 +39,14 @@ if [ -f ~/.bashrc_private ]; then
   source ~/.bashrc_private
 fi
 
+# Fzf shortcuts.
+if [ -f ~/.bashrc_fzf ]; then
+  source ~/.bashrc_fzf
+fi
+
+# Fzf install
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
 # enable programmable completion features
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
@@ -147,13 +155,13 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 _git_alias "ga" "add"
 _git_alias "gb" "branch"
-_git_alias "go" "checkout"
-_git_alias "gc" "commit"
+_git_alias "gco" "checkout"
+_git_alias "gcm" "commit"
 _git_alias "gl" "log"
 _git_alias "gr" "rebase"
 _git_alias "gs" "status"
 alias gbd='_git_delete_branches'
-alias gob='git checkout -b'
+alias gcb='git checkout -b'
 alias gca='git commit --amend'
 alias gcan='git commit --amend --no-edit'
 alias gro='_git_rebase_onto'
@@ -165,10 +173,11 @@ alias dotconfig='/usr/bin/git --git-dir=$HOME/.dotconfig/ --work-tree=$HOME'
 alias cds='cd ~/src/'
 alias cdg='cd `git rev-parse --show-toplevel`'
 alias r='ranger'
-alias f='fzf --print0 | xargs -0 -o vim'
+alias f="fzf --bind 'enter:become(vim {})'"
 alias tm='tmux attach -t default -d || tmux new-session -s default'
 
 export VIMRC_PATH=$HOME/.vim/vimrc
 
 export PATH=$PATH:$HOME/bin
 export PATH=$PATH:/usr/local/bin/
+

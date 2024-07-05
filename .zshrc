@@ -62,3 +62,5 @@ export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 # Load zsh-syntax-highlighting; should be last.
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

@@ -96,6 +96,12 @@ autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 autocmd BufWinLeave * call clearmatches()
 
+" Center screen after moving vertically
+nnoremap <C-d> <C-d>zz
+nnoremap <C-u> <C-u>zz
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
 " Native shortcuts
 map <C-j> <C-W>j
 map <C-k> <C-W>k
@@ -119,8 +125,8 @@ call plug#begin('~/.vim/plugged')
 Plug 'jlanzarotta/bufexplorer'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-commentary'
-Plug 'ruanyl/vim-gh-line'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-surround'
 Plug 'ojroques/vim-oscyank',
@@ -129,13 +135,14 @@ Plug 'sheerun/vim-polyglot'
 Plug 'svermeulen/vim-cutlass'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vim-autoformat/vim-autoformat'
-Plug 'ruanyl/vim-gh-line'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'jesseleite/vim-agriculture'
 Plug 'vim-scripts/DoxygenToolkit.vim'
 Plug 'wellle/context.vim'
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Plug 'markonm/traces.vim'
 call plug#end()
 
 " Set the terminal colors. Must be done after plug#end()
@@ -165,7 +172,10 @@ let g:formatters_cpp = ['custom_clang']
 let g:formatters_c = ['custom_clang']
 
 " Autoforward yank events.
-autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankRegister "' | endif
+  autocmd TextYankPost *
+      \ if v:event.operator is 'y' && v:event.regname is '+' |
+      \ execute 'OSCYankRegister +' |
+      \ endif
 let g:oscyank_silent = v:true
 let g:oscyank_term = 'default'
 
@@ -183,22 +193,9 @@ nmap <silent> gr <Plug>(coc-references)
 let g:coc_disable_startup_warning = 1
 let g:coc_disable_transparent_cursor = 1
 
-" inoremap <silent><expr> <TAB>
-"       \ coc#pum#visible() ? coc#pum#confirm() :
-"       \ CheckBackspace() ? "\<Tab>" :
-"       \ coc#refresh()
 inoremap <expr><TAB> coc#pum#visible() ? coc#pum#next(1) : "\<TAB>"
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<S-TAB>"
-
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice.
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-function! CheckBackspace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+inoremap <expr><CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
 nnoremap <leader>o :BufExplorer<cr>
 " Fzf search files from root dir.
@@ -222,7 +219,7 @@ if executable('rg')
 endif
 
 " Opens a shell in the current files directory
-nnoremap <C-x> :let $VIM_DIR=expand('%:p:h')<cr>:tab :term ++close bash<cr>cd $VIM_DIR<cr>
+nnoremap <leader>x :let $VIM_DIR=expand('%:p:h')<cr>:tab :term ++close bash<cr>cd $VIM_DIR<cr>
 " For the following functions:
 " @/ = last search pattern
 " . is used to join strings
@@ -258,9 +255,41 @@ set wildignore+=*/.git/*,*/tmp/*,*.swp
 " Always color rg output
 set grepprg=grep\ --color=always\ -n\ $*\ /dev/null
 
-" Copy github link with <leader>gh
-let g:gh_open_command = 'fn() { echo "$@" | xsel -ib; }; fn '
-let g:gh_trace = 1
+" This function takes a range input in the form :<line1>,<line2>.
+" See: https://github.com/tpope/vim-fugitive/issues/148#issuecomment-482184198
+function! CopyGithubLink(range)
+  " The GBrowse! function copies the link to the '+' regsiter, but I can't
+  " figure out how to read this register programatically, so we have to rely
+  " on the fact that GBrowse! also echos the link. We capture this output and
+  " put this into OSCYank so that we can copy from a remote device.
+  redir @g
+  execute a:range . 'GBrowse!'
+  redir END
+  execute 'OSCYankRegister g'
+endfunction
+
+function! CopyGithubLinkRangeWrapper() range
+    " Get start and end line numbers of the visual selection
+    let start_line = line("'<")
+    let end_line = line("'>")
+
+    " Not sure why we need to save the current position and restore it later
+    " after executing this function, but ChatGPT told me to do it, and without
+    " it, the cursor jumps to the top of the page.
+    let save_cursor = getpos('.')
+
+    " Print the line numbers (for demonstration)
+    execute CopyGithubLink(start_line . "," . end_line . ".")
+
+    " Restore cursor position
+    call setpos('.', save_cursor)
+endfunction
+
+nnoremap <leader>gh :call CopyGithubLink('.')<CR>
+xnoremap <Leader>gh :call CopyGithubLinkRangeWrapper()<CR>
+
+" Show diff
+nnoremap <silent> <Leader>d  :Gvdiffsplit<CR>
 
 " Create doxygen comment
 map <leader>c :Dox<cr>
