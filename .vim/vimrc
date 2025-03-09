@@ -162,8 +162,7 @@ let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
 autocmd FileType cpp set commentstring=//\ %s
 autocmd FileType c set commentstring=//\ %s
 
-xnoremap f :Autoformat<CR>
-noremap f :Autoformat<CR>
+vnoremap f :Autoformat<CR>
 
 let g:formatter_python_style = 'black'
 let g:formatdef_custom_clang = '"clang-format --fallback-style=google"'
@@ -209,7 +208,14 @@ nnoremap <C-f> :let $VIM_DIR=expand('%:p:h')<CR>:RgRaw<space>""<space>$VIM_DIR<S
 " Fzf search the last search pattern from the root dir.
 nnoremap <C-s> :call SearchInProject()<cr>
 function! SearchInProject()
-  let search = substitute(@/, '["\\<", "\\>]', '', 'g')
+  let search = @/
+  let search = substitute(search, '\\<', '', 'g')
+  let search = substitute(search, '\\>', '', 'g')
+  " rg treats { and } as special characters, unlike vim.
+  let search = substitute(search, '{', '\\{', 'g')
+  let search = substitute(search, '}', '\\}', 'g')
+  " vim treats / as a special characters, unlike rg.
+  let search = substitute(search, '\\/', '/', 'g')
   execute "RgRaw " . search
 endfunction
 
@@ -241,7 +247,9 @@ let $FZF_DEFAULT_OPTS = '--bind ctrl-s:select-all'
 " Replace in QuickFix list.
 nnoremap <leader>rq :call ReplaceInQuickFixList(@/)<cr>
 function! ReplaceInQuickFixList(search)
-  let search = substitute(a:search, '["\\<", "\\>]', '', 'g')
+  let search = a:search
+  let search = substitute(search, '\\<', '', 'g')
+  let search = substitute(search, '\\>', '', 'g')
   try
     let replace = input('Enter replacement pattern: ')
     execute "cfdo %s/" . search . "/" . replace . "/gc | update"
