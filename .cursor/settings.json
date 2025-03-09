@@ -1,0 +1,108 @@
+{
+    "workbench.activityBar.location": "top",
+    "workbench.activityBar.orientation": "vertical",
+    "editor.lineNumbers": "relative",
+    "workbench.colorTheme": "Gruvbox Dark Hard",
+    "vim.incsearch": true,
+    "vim.hlsearch": true,
+    "vim.visualstar": true,
+    "vim.leader": ";",
+    "vim.visualModeKeyBindings": [
+        {
+            "before": ["f"],
+            "commands": [
+                "editor.action.formatSelection",
+                "extension.vim_escape",
+            ]
+        },
+        {
+          "before": ["d"],
+          "after": ["\"", "_", "d"]
+        },
+        {
+          "before": ["c"],
+          "after": ["\"", "_", "c"]
+        },
+        {
+          "before": ["x"],
+          "after": ["\"", "_", "x"]
+        },
+        {
+          "before": ["m"],
+          "after": ["d"]
+        }
+    ],
+    "vim.insertModeKeyBindings": [
+       {
+           "before": ["j", "k"],
+           "after": ["<Esc>"]
+       }
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": ["<leader>", "<space>"],
+            "commands": [":nohl"]
+        },
+        {
+            "before": ["<leader>", "f"],
+            "commands": ["workbench.action.quickOpen"]
+        },
+        {
+            "before": ["<leader>", "r", "f"],
+            "commands": [
+              {
+                "command": "editor.action.startFindReplaceAction",
+              }
+            ],
+        },
+        {
+            "before": ["<leader>", "o"],
+            "commands": ["workbench.action.quickOpen"]
+        },
+        {
+          "before": ["D"],
+          "after": ["\"", "_", "D"]
+        },
+        {
+          "before": ["d"],
+          "after": ["\"", "_", "d"]
+        },
+        {
+          "before": ["d", "d"],
+          "after": ["\"", "_", "d", "d"]
+        },
+        {
+          "before": ["c"],
+          "after": ["\"", "_", "c"]
+        },
+        {
+          "before": ["C"],
+          "after": ["\"", "_", "C"]
+        },
+        {
+          "before": ["c", "c"],
+          "after": ["\"", "_", "c", "c"]
+        },
+        {
+          "before": ["x"],
+          "after": ["\"", "_", "x"]
+        },
+        {
+          "before": ["X"],
+          "after": ["\"", "_", "X"]
+        },
+        {
+          "before": ["m"],
+          "after": ["d"]
+        },
+        {
+          "before": ["m", "m"],
+          "after": ["d", "d"]
+        },
+        {
+          "before": ["M"],
+          "after": ["D"]
+        },
+    ],
+    "window.customTitleBarVisibility": "auto",
+}
