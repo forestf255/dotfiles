@@ -1,8 +1,27 @@
 {
-    "workbench.activityBar.location": "top",
-    "workbench.activityBar.orientation": "vertical",
+    "editor.scrollbar.horizontal": "hidden",
+    "editor.scrollbar.vertical": "hidden",
+
+    // Limits each pane to have 1 tab.
+    "workbench.editor.limit.enabled": true,
+    "workbench.editor.limit.value": 1,
+    "workbench.editor.limit.perEditorGroup": true,
+
+    // Hides the tabs UI
+    "workbench.editor.showTabs": "single",
+
     "editor.lineNumbers": "relative",
-    "workbench.colorTheme": "Gruvbox Dark Hard",
+    "editor.overviewRulerBorder": false,
+
+    "editor.cursorBlinking": "solid",
+    "editor.cursorSmoothCaretAnimation": "off",
+
+    // Disable animations
+    "workbench.enableExperiments": false,
+    "workbench.editor.enablePreview": false,
+    "editor.smoothScrolling": false,
+    "workbench.list.smoothScrolling": false,
+
     "vim.incsearch": true,
     "vim.hlsearch": true,
     "vim.visualstar": true,
@@ -104,5 +123,5 @@
           "after": ["D"]
         },
     ],
-    "window.customTitleBarVisibility": "auto",
+    "workbench.colorTheme": "Gruvbox Material Dark",
 }

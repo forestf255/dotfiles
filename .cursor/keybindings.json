@@ -134,7 +134,7 @@
 {
   "key": "-",
   "command": "workbench.view.explorer",
-  "when": "!explorerViewletVisible && editorTextFocus && vim.active && vim.mode == 'Normal'"
+  "when": "!explorerViewletVisible && (!editorTextFocus || (vim.active && vim.mode != 'Insert'))"
 },
 {
   "key": "ctrl+b",
