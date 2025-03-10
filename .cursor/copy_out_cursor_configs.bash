@@ -29,7 +29,7 @@ copy_cursor_configs() {
   fi
   
   # Copy settings.json if it exists
-  if [[ -f "$destination_dir/settings.json" ]]; then
+  if [[ -f "$config_dir/settings.json" ]]; then
     cp "$config_dir/"settings.json "$destination_dir/settings.json"
     echo "Copied settings.json to $destination_dir/"
   else
@@ -37,7 +37,7 @@ copy_cursor_configs() {
   fi
   
   # Copy keybindings.json if it exists
-  if [[ -f "$destination_dir/keybindings.json" ]]; then
+  if [[ -f "$config_dir/keybindings.json" ]]; then
     cp "$config_dir/keybindings.json" "$destination_dir/keybindings.json"
     echo "Copied keybindings.json to $destination_dir/"
   else
