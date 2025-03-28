@@ -34,18 +34,18 @@
                 "extension.vim_escape",
             ]
         },
-        {
-          "before": ["d"],
-          "after": ["\"", "_", "d"]
-        },
-        {
-          "before": ["c"],
-          "after": ["\"", "_", "c"]
-        },
-        {
-          "before": ["x"],
-          "after": ["\"", "_", "x"]
-        },
+        // {
+        //   "before": ["d"],
+        //   "after": ["\"", "_", "d"]
+        // },
+        // {
+        //   "before": ["c"],
+        //   "after": ["\"", "_", "c"]
+        // },
+        // {
+        //   "before": ["x"],
+        //   "after": ["\"", "_", "x"]
+        // },
         {
           "before": ["m"],
           "after": ["d"]
@@ -124,4 +124,6 @@
         },
     ],
     "workbench.colorTheme": "Gruvbox Material Dark",
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "editor.inlayHints.enabled": "off",
 }

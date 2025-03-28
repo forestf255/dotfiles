@@ -167,11 +167,6 @@
   "when": "editorTextFocus && vim.active && vim.use<C-k> && !inDebugRepl"
 },
 {
-  "key": "ctrl+.",
-  "command": "cursorai.action.generateInTerminal",
-  "when": "terminalFocus && terminalHasBeenCreated || terminalFocus && terminalProcessSupported"
-},
-{
   "key": "ctrl+k",
   "command": "-cursorai.action.generateInTerminal",
   "when": "terminalFocus && terminalHasBeenCreated || terminalFocus && terminalProcessSupported"
@@ -180,5 +175,59 @@
   "key": "ctrl+f",
   "command": "-actions.find",
   "when": "editorFocus || editorIsOpen"
+},
+{
+  "key": "ctrl+i",
+  "command": "-workbench.action.terminal.chat.start",
+  "when": "terminalChatAgentRegistered && terminalFocusInAny && terminalHasBeenCreated || terminalChatAgentRegistered && terminalFocusInAny && terminalProcessSupported"
+},
+{
+  "key": "ctrl+i",
+  "command": "-workbench.action.chat.startVoiceChat",
+  "when": "chatIsEnabled && hasSpeechProvider && inChatInput && !chatSessionRequestInProgress && !editorFocus && !notebookEditorFocused && !scopedVoiceChatGettingReady && !speechToTextInProgress || chatIsEnabled && hasSpeechProvider && inlineChatFocused && !chatSessionRequestInProgress && !editorFocus && !notebookEditorFocused && !scopedVoiceChatGettingReady && !speechToTextInProgress"
+},
+{
+  "key": "ctrl+i",
+  "command": "-workbench.action.chat.stopListeningAndSubmit",
+  "when": "inChatInput && voiceChatInProgress && scopedVoiceChatInProgress == 'editor' || inChatInput && voiceChatInProgress && scopedVoiceChatInProgress == 'inline' || inChatInput && voiceChatInProgress && scopedVoiceChatInProgress == 'quick' || inChatInput && voiceChatInProgress && scopedVoiceChatInProgress == 'view' || inlineChatFocused && voiceChatInProgress && scopedVoiceChatInProgress == 'editor' || inlineChatFocused && voiceChatInProgress && scopedVoiceChatInProgress == 'inline' || inlineChatFocused && voiceChatInProgress && scopedVoiceChatInProgress == 'quick' || inlineChatFocused && voiceChatInProgress && scopedVoiceChatInProgress == 'view'"
+},
+{
+  "key": "ctrl+i",
+  "command": "-editor.action.triggerSuggest",
+  "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
+},
+{
+  "key": "ctrl+i",
+  "command": "-composer.startComposerPrompt",
+  "when": "composerIsEnabled"
+},
+{
+  "key": "ctrl+.",
+  "command": "composer.startComposerPrompt"
+},
+{
+  "key": "ctrl+.",
+  "command": "-editor.changeDropType",
+  "when": "dropWidgetVisible"
+},
+{
+  "key": "ctrl+.",
+  "command": "-editor.changePasteType",
+  "when": "pasteWidgetVisible"
+},
+{
+  "key": "ctrl+.",
+  "command": "-problems.action.showQuickFixes",
+  "when": "problemFocus"
+},
+{
+  "key": "ctrl+.",
+  "command": "-acceptSelectedCodeAction",
+  "when": "codeActionMenuVisible"
+},
+{
+  "key": "ctrl+.",
+  "command": "-workbench.action.terminal.showQuickFixes",
+  "when": "terminalFocus"
 },
 ]
