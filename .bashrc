@@ -141,6 +141,13 @@ _git_alias() {
   __git_complete $_alias _git_$_operation
 }
 
+_git_prune_local_branches() {
+  git fetch -p  # Prune deleted remote branches
+  for branch in $(git branch -vv | awk '/: gone]/{print $1}'); do
+    git branch -D "$branch"
+  done
+}
+
 # enable color support of ls
 if [ -x /usr/bin/dircolors ]; then
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -161,6 +168,7 @@ _git_alias "gl" "log"
 _git_alias "gr" "rebase"
 _git_alias "gs" "status"
 alias gbd='_git_delete_branches'
+alias gpb='_git_prune_local_branches'
 alias gcb='git checkout -b'
 alias gca='git commit --amend'
 alias gcan='git commit --amend --no-edit'
@@ -180,4 +188,3 @@ export VIMRC_PATH=$HOME/.vim/vimrc
 
 export PATH=$PATH:$HOME/bin
 export PATH=$PATH:/usr/local/bin/
-
