@@ -56,10 +56,22 @@ if ! shopt -oq posix; then
   fi
 fi
 
+_git_alias() {
+  _alias=$1
+  _operation=$2
+  alias $_alias="git $_operation"
+  __git_complete $_alias _git_$_operation
+}
+
 if [ -f "/usr/share/bash-completion/completions/git" ]; then
   source /usr/share/bash-completion/completions/git
-else
-  echo "Error loading git completions"
+  _git_alias "ga" "add"
+  _git_alias "gb" "branch"
+  _git_alias "gco" "checkout"
+  _git_alias "gcm" "commit"
+  _git_alias "gl" "log"
+  _git_alias "gr" "rebase"
+  _git_alias "gs" "status"
 fi
 
 parse_git_branch() {
@@ -134,13 +146,6 @@ _git_rebase_onto () {
   git rebase $_REBASE_FROM --onto $_REBASE_TO
 }
 
-_git_alias() {
-  _alias=$1
-  _operation=$2
-  alias $_alias="git $_operation"
-  __git_complete $_alias _git_$_operation
-}
-
 _git_prune_local_branches() {
   git fetch -p  # Prune deleted remote branches
   for branch in $(git branch -vv | awk '/: gone]/{print $1}'); do
@@ -160,20 +165,12 @@ alias la='ls --color=auto -Fa'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-_git_alias "ga" "add"
-_git_alias "gb" "branch"
-_git_alias "gco" "checkout"
-_git_alias "gcm" "commit"
-_git_alias "gl" "log"
-_git_alias "gr" "rebase"
-_git_alias "gs" "status"
 alias gbd='_git_delete_branches'
 alias gpb='_git_prune_local_branches'
 alias gcb='git checkout -b'
 alias gca='git commit --amend'
 alias gcan='git commit --amend --no-edit'
 alias gro='_git_rebase_onto'
-__git_complete gro _git_rebase
 
 # https://www.atlassian.com/git/tutorials/dotfiles
 alias dotconfig='/usr/bin/git --git-dir=$HOME/.dotconfig/ --work-tree=$HOME'
