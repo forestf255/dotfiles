@@ -80,3 +80,7 @@ end, { desc = "Toggle relative line numbers" })
 vim.keymap.set("n", "<leader>i", function()
 	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ 0 }), { 0 })
 end, { desc = "Toggle LSP Inlay Hints" })
+
+-- PLUGINS
+-- Toggle diagnostics window.
+vim.keymap.set("n", "<leader>d", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Toggle Trouble Diagnostics" })
