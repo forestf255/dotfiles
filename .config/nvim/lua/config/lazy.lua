@@ -21,6 +21,34 @@ require("lazy").setup({
     -- import your plugins
     { import = "plugins" },
   },
-  -- automatically check for plugin updates
-  checker = { enabled = true },
+  checker = { enabled = false },
+})
+
+-- Auto-update plugins on startup, notify only if updates occurred
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true,
+  callback = function()
+    vim.defer_fn(function()
+      require("lazy").update({ show = false })
+    end, 0)
+  end,
+})
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "LazyUpdate",
+  callback = function(ev)
+    local updated = {}
+    for _, plugin in pairs(ev.data and ev.data.plugins or {}) do
+      if plugin._.updated then
+        table.insert(updated, plugin.name)
+      end
+    end
+    if #updated > 0 then
+      vim.notify(
+        "Updated " .. #updated .. " plugin(s): " .. table.concat(updated, ", "),
+        vim.log.levels.INFO,
+        { title = "lazy.nvim" }
+      )
+    end
+  end,
 })

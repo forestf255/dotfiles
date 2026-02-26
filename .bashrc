@@ -159,6 +159,7 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 #### ALIASES ####
+alias v="nvim"
 alias ls='ls --color=auto -F'
 alias ll='ls --color=auto -Flh'
 alias la='ls --color=auto -Fa'
