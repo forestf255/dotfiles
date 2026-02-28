@@ -50,3 +50,7 @@ vim.api.nvim_create_autocmd("CursorHold", {
 
 -- Faster hover trigger for the diagnotic popup.
 vim.o.updatetime = 250
+
+-- Case-insensitive search unless pattern contains uppercase.
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
