@@ -179,7 +179,7 @@ alias dotconfig='/usr/bin/git --git-dir=$HOME/.dotconfig/ --work-tree=$HOME'
 alias cds='cd ~/src/'
 alias cdg='cd `git rev-parse --show-toplevel`'
 alias r='ranger'
-alias f="fzf --bind 'enter:become(vim {})'"
+alias f="fzf --bind 'enter:become(nvim {})'"
 alias tm='tmux attach -t default -d || tmux new-session -s default'
 
 export VIMRC_PATH=$HOME/.vim/vimrc
