@@ -54,3 +54,6 @@ vim.o.updatetime = 250
 -- Case-insensitive search unless pattern contains uppercase.
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+
+-- Keep block cursor in all modes.
+vim.opt.guicursor = ""
