@@ -6,3 +6,4 @@ Run the following on a new machine:
 * /usr/bin/git --git-dir=$HOME/.dotconfig/ --work-tree=$HOME checkout
 * source $HOME/.bashrc
 * dotconfig config --local status.showUntrackedFiles no
+* config submodule update --init --recursive
