@@ -1,5 +1,5 @@
 -- jk to exit insert mode.
-vim.keymap.set("i", "jk", "<Esc>", opts)
+vim.keymap.set("i", "jk", "<Esc>")
 
 -- ctrl + hjkl for navigating windows.
 vim.keymap.set("n", "<C-h>", "<C-w>h")

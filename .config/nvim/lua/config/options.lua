@@ -18,21 +18,33 @@ vim.opt.scrolloff = 10
 -- Yank/move copies to clipboard.
 vim.opt.clipboard = "unnamedplus"
 
--- Highlight and automatically remove trailing whitespace.
+-- Highlight trailing whitespace.
+local ws_match_ids = {}
 vim.api.nvim_create_autocmd({ "BufWinEnter", "InsertLeave" }, {
 	callback = function()
-		vim.fn.matchadd("ExtraWhitespace", [[\s\+$]])
+		local win = vim.api.nvim_get_current_win()
+		if ws_match_ids[win] then
+			pcall(vim.fn.matchdelete, ws_match_ids[win], win)
+		end
+		ws_match_ids[win] = vim.fn.matchadd("ExtraWhitespace", [[\s\+$]])
 	end,
 })
 vim.api.nvim_create_autocmd("InsertEnter", {
 	callback = function()
-		vim.fn.clearmatches()
-		vim.fn.matchadd("ExtraWhitespace", [[\s\+\%#\@<!$]])
+		local win = vim.api.nvim_get_current_win()
+		if ws_match_ids[win] then
+			pcall(vim.fn.matchdelete, ws_match_ids[win], win)
+		end
+		ws_match_ids[win] = vim.fn.matchadd("ExtraWhitespace", [[\s\+\%#\@<!$]])
 	end,
 })
 vim.api.nvim_create_autocmd("BufWinLeave", {
 	callback = function()
-		vim.fn.clearmatches()
+		local win = vim.api.nvim_get_current_win()
+		if ws_match_ids[win] then
+			pcall(vim.fn.matchdelete, ws_match_ids[win], win)
+			ws_match_ids[win] = nil
+		end
 	end,
 })
 
