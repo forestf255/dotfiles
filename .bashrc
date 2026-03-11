@@ -12,8 +12,8 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=100000
+HISTFILESIZE=200000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -134,12 +134,12 @@ _git_delete_branches() {
 _git_rebase_onto () {
   _REBASE_FROM="HEAD~1"
   _REBASE_TO="origin/master"
-  if [[ -z "$1" && -z "$2" ]]; then
+  if [[ -n "$1" && -n "$2" ]]; then
     # $1 is the commit that we are rebasing from
     # $2 is the commit that we are rebasing to
     _REBASE_FROM=$1
     _REBASE_TO=$2
-  elif [[ -z "$1" ]]; then
+  elif [[ -n "$1" ]]; then
     # $1 is the commit that we are rebasing to
     _REBASE_TO=$1
   fi
