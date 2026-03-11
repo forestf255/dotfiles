@@ -1,6 +1,8 @@
 return {
 	{
 		"mason-org/mason.nvim",
+		cmd = "Mason",
+		event = "VeryLazy",
 		opts = {
 			ensure_installed = {
 				"clang-format",
@@ -12,6 +14,7 @@ return {
 	},
 	{
 		"mason-org/mason-lspconfig.nvim",
+		event = "VeryLazy",
 		opts = {
 			ensure_installed = {
 				"clangd",

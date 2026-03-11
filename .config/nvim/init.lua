@@ -6,6 +6,3 @@ require("config.lazy")
 require("config.keymaps")
 require("config.options")
 
-require("mason").setup()
-require("mason-lspconfig").setup()
-require("lualine").setup()
