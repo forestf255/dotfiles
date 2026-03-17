@@ -97,7 +97,7 @@ __set_prompt() {
   else
     PS1+="\u@\h"
   fi
-  PS1+="${Blu}\w ${Purp}$(parse_git_branch)\[\e[00m\]$ "
+  PS1+="${Blu}\w ${Purp}$(parse_git_branch)\[\e[00m\]$ \a"
 }
 export PROMPT_COMMAND=__set_prompt
 
