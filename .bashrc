@@ -74,32 +74,43 @@ if [ -f "/usr/share/bash-completion/completions/git" ]; then
   _git_alias "gs" "status"
 fi
 
+PROMPT_DIRTRIM=3
+[ -f /.dockerenv ] && _IN_DOCKER=1
+
 parse_git_branch() {
-  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+  local branch
+  branch=$(git --no-optional-locks symbolic-ref --short HEAD 2>/dev/null) \
+    || branch=$(git --no-optional-locks rev-parse --short HEAD 2>/dev/null) \
+    || return
+  if git --no-optional-locks diff-index --cached --quiet HEAD -- 2>/dev/null; then
+    echo '\[\e[0;32m\]'"($branch)"
+  else
+    echo '\[\e[0;33m\]'"($branch)"
+  fi
 }
 __set_prompt() {
   local EXIT="$?"             # This needs to be first
   PS1=""
 
   local Red='\[\e[0;31m\]'
-  local Gre='\[\e[0;32m\]'
   local Blu='\[\e[1;34m\]'
-  local Purp='\[\e[1;35m\]'
   local BluBG='\[\e[48;5;27m\e[38;5;231m\]'
   local Clear='\[\e[0m\]'
 
-  if [ $EXIT != 0 ]; then
+  if [ "$EXIT" != 0 ]; then
     PS1+="[${Red}${EXIT}${Clear}]"      # Add red if exit code non 0
   fi
 
-  if [ -f /.dockerenv ]; then
+  [ -n "$VIRTUAL_ENV" ] && PS1+="(${VIRTUAL_ENV##*/}) "
+
+  if [ -n "$_IN_DOCKER" ]; then
     PS1+="${BluBG}\u@\h${Clear}"
   else
     PS1+="\u@\h"
   fi
-  PS1+="${Blu}\w ${Purp}$(parse_git_branch)\[\e[00m\]$ \a"
+  PS1+="${Blu}\w ${Clear}$(parse_git_branch)${Clear}$ "
 }
-export PROMPT_COMMAND=__set_prompt
+PROMPT_COMMAND=__set_prompt
 
 export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
 export FZF_DEFAULT_COMMAND='rg --files --hidden'
@@ -184,5 +195,8 @@ alias tm='tmux attach -t default -d || tmux new-session -s default'
 
 export VIMRC_PATH=$HOME/.vim/vimrc
 
-export PATH=$PATH:$HOME/bin
-export PATH=$PATH:/usr/local/bin/
+export PATH=$PATH:$HOME/bin:/usr/local/bin
+
+[[ -f /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv bash)"
+
+[[ -f "$HOME/.local/bin/env" ]] && source "$HOME/.local/bin/env"
