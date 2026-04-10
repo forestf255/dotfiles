@@ -171,6 +171,87 @@ _git_prune_local_branches() {
   done
 }
 
+_wt_path() {
+  local branch="$1"
+  local main_repo
+  main_repo=$(git worktree list 2>/dev/null | head -1 | awk '{print $1}')
+  if [[ -z "$main_repo" ]]; then
+    echo "Not in a git repository" >&2
+    return 1
+  fi
+  echo "$HOME/src/worktrees/$(basename "$main_repo")-${branch//\//-}"
+}
+
+_wt_fzf() {
+  find "$HOME/src/worktrees" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | \
+    fzf --prompt="${1:-Worktree: }" --preview="git -C {} log --oneline -5 2>/dev/null"
+}
+
+_wt_open() {
+  local name="$1" path="$2"
+  if ! tmux select-window -t "$name" 2>/dev/null; then
+    tmux new-window -n "$name"
+    tmux send-keys "cd '$path' && clear" Enter
+  fi
+}
+
+_wt_create() {
+  local branch="$1"
+  local repo_root worktree_path
+  repo_root=$(git worktree list 2>/dev/null | head -1 | awk '{print $1}')
+  if [[ -z "$repo_root" ]]; then
+    echo "Not in a git repository" >&2
+    return 1
+  fi
+  worktree_path=$(_wt_path "$branch") || return 1
+
+  if ! git -C "$repo_root" show-ref --verify --quiet "refs/heads/$branch"; then
+    git -C "$repo_root" branch "$branch"
+  fi
+
+  mkdir -p "$HOME/src/worktrees"
+  if [[ ! -d "$worktree_path" ]]; then
+    git -C "$repo_root" worktree add "$worktree_path" "$branch"
+  fi
+
+  _wt_open "${branch//\//-}" "$worktree_path"
+}
+
+_wt_remove() {
+  local worktree_path
+  if [[ -n "$1" ]]; then
+    worktree_path=$(_wt_path "$1") || return 1
+  else
+    worktree_path=$(_wt_fzf "Delete worktree: ")
+    [[ -z "$worktree_path" ]] && return 0
+  fi
+
+  local branch=$(git -C "$worktree_path" rev-parse --abbrev-ref HEAD 2>/dev/null)
+  local main_repo=$(git -C "$worktree_path" worktree list 2>/dev/null | head -1 | awk '{print $1}')
+
+  git worktree remove "$worktree_path" || return 1
+  echo "Removed worktree: $worktree_path"
+
+  if [[ -n "$branch" && "$branch" != "HEAD" && -n "$main_repo" ]]; then
+    git -C "$main_repo" branch -d "$branch"
+  fi
+}
+
+_wt_navigate() {
+  local worktree_path
+  worktree_path=$(_wt_fzf) || return 0
+  [[ -z "$worktree_path" ]] && return 0
+  _wt_open "$(basename "$worktree_path")" "$worktree_path"
+}
+
+wt() {
+  case "$1" in
+    rm) _wt_remove "$2" ;;
+    "")  _wt_navigate ;;
+    *)   _wt_create "$1" ;;
+  esac
+}
+
 # enable color support of ls
 if [ -x /usr/bin/dircolors ]; then
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
