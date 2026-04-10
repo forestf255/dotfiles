@@ -7,6 +7,7 @@ return {
 			show_hidden = true,
 		},
 		keymaps = {
+			["<C-h>"] = false,
 			["l"] = "actions.select",
 			["h"] = "actions.parent",
 		},
