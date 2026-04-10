@@ -93,12 +93,19 @@ __set_prompt() {
   PS1=""
 
   local Red='\[\e[0;31m\]'
+  local Yel='\[\e[1;33m\]'
   local Blu='\[\e[1;34m\]'
   local BluBG='\[\e[48;5;27m\e[38;5;231m\]'
   local Clear='\[\e[0m\]'
 
   if [ "$EXIT" != 0 ]; then
     PS1+="[${Red}${EXIT}${Clear}]"      # Add red if exit code non 0
+  fi
+
+  local _kube_ctx
+  _kube_ctx=$(kubectl config current-context 2>/dev/null)
+  if [[ -n "$_kube_ctx" && ! "$_kube_ctx" =~ "dev" ]]; then
+    PS1+="${Yel}[CAUTION: K8S PROD CONTEXT]${Clear} "
   fi
 
   [ -n "$VIRTUAL_ENV" ] && PS1+="(${VIRTUAL_ENV##*/}) "
