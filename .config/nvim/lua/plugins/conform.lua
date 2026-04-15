@@ -13,6 +13,7 @@ return {
 			javascriptreact = { "prettier" },
 			typescript = { "prettier" },
 			typescriptreact = { "prettier" },
+			go = { "gofmt" },
 			bzl = { "buildifier" },
 			bazel = { "buildifier" },
 			starlark = { "buildifier" },

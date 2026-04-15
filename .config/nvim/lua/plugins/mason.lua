@@ -24,6 +24,7 @@ return {
 				"pyright",
 				"bazelrc_lsp",
 				"ts_ls",
+				"gopls",
 			},
 		},
 		dependencies = {
