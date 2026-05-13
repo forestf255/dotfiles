@@ -179,11 +179,11 @@ _wt_path() {
     echo "Not in a git repository" >&2
     return 1
   fi
-  echo "$HOME/src/worktrees/$(basename "$main_repo")-${branch//\//-}"
+  echo "$HOME/.worktrees/$(basename "$main_repo")-${branch//\//-}"
 }
 
 _wt_fzf() {
-  find "$HOME/src/worktrees" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | \
+  find "$HOME/.worktrees" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | \
     fzf --prompt="${1:-Worktree: }" --preview="git -C {} log --oneline -5 2>/dev/null"
 }
 
@@ -209,7 +209,7 @@ _wt_create() {
     git -C "$repo_root" branch "$branch"
   fi
 
-  mkdir -p "$HOME/src/worktrees"
+  mkdir -p "$HOME/.worktrees"
   if [[ ! -d "$worktree_path" ]]; then
     git -C "$repo_root" worktree add "$worktree_path" "$branch"
   fi
